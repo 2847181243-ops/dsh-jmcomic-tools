@@ -1,0 +1,32 @@
+{
+  "name": "dsh-jmcomic-tools",
+  "version": "0.1.0",
+  "description": "DeepSeek Harness 用的漫画工具：按编号下一本、原图打成一个 zip（自检后删源目录）、只查标题和作者。",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "dsh-jmcomic-fetch": "fetch.mjs",
+    "dsh-jmcomic-title": "title.mjs"
+  },
+  "files": [
+    "fetch.mjs",
+    "title.mjs",
+    "packzip.py",
+    "pack7z.py",
+    "skills",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "dsh-plugin",
+    "jmcomic",
+    "comic",
+    "downloader",
+    "zip"
+  ],
+  "engines": {
+    "node": ">=20"
+  }
+}
