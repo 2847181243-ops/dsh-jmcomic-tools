@@ -1,31 +1,28 @@
-# jmcomic-tools
+﻿# dsh-jmcomic-tools
 
-按编号（车牌号）下载一本漫画、打包成 zip、只查标题和作者的小工具集。给 DeepSeek Harness 用的本地脚本，不是插件本体。
+鎸夌紪鍙凤紙杞︾墝鍙凤級涓嬭浇涓€鏈极鐢汇€佹墦鍖呮垚 zip銆佸彧鏌ユ爣棰樺拰浣滆€呯殑灏忓伐鍏烽泦銆傜粰 DeepSeek Harness 鐢ㄧ殑鏈湴鑴氭湰锛屼笉鏄彃浠舵湰浣撱€?
+## 渚濊禆
 
-## 依赖
+- Node.js 鈮?20
+- Python 3.11+锛岃 `py7zr`锛堝彲閫夛紝7z 鎵撳寘鐢級
+- 涓嬭浇鍐呮牳鏉ヨ嚜 [dsh-jmcomic](https://www.npmjs.com/package/dsh-jmcomic)锛堝唴缃?jmcomic锛夛紝鏈粨搴撳彧鍋氳杽灏佽
 
-- Node.js ≥ 20
-- Python 3.11+，装 `py7zr`（可选，7z 打包用）
-- 下载内核来自 [dsh-jmcomic](https://www.npmjs.com/package/dsh-jmcomic)（内置 jmcomic），本仓库只做薄封装
+## 鑴氭湰
 
-## 脚本
-
-| 文件 | 用途 |
+| 鏂囦欢 | 鐢ㄩ€?|
 |---|---|
-| `fetch.mjs` | 下整本 → 原图打成一个 zip（自检条目数/路径）→ 删源目录；归档只增不删 |
-| `packzip.py` | 目录 → zip，打完自检 |
-| `title.mjs` | 只回标题和作者，别的字段不读 |
+| `fetch.mjs` | 涓嬫暣鏈?鈫?鍘熷浘鎵撴垚涓€涓?zip锛堣嚜妫€鏉＄洰鏁?璺緞锛夆啋 鍒犳簮鐩綍锛涘綊妗ｅ彧澧炰笉鍒?|
+| `packzip.py` | 鐩綍 鈫?zip锛屾墦瀹岃嚜妫€ |
+| `title.mjs` | 鍙洖鏍囬鍜屼綔鑰咃紝鍒殑瀛楁涓嶈 |
 
-## 用法
+## 鐢ㄦ硶
 
 ```bash
 node fetch.mjs 268607 --verbose
 node title.mjs 268607
 ```
 
-`fetch.mjs` 里把 `ROOT`、`PY`、`BRIDGE` 三个常量改成你自己机器的路径。
+`fetch.mjs` 閲屾妸 `ROOT`銆乣PY`銆乣BRIDGE` 涓変釜甯搁噺鏀规垚浣犺嚜宸辨満鍣ㄧ殑璺緞銆?
+## 璇存槑
 
-## 说明
-
-- 只做下载和归档，不负责内容分发。
-- 下载内容版权归原作者，自行判断用途。
+- 鍙仛涓嬭浇鍜屽綊妗ｏ紝涓嶈礋璐ｅ唴瀹瑰垎鍙戙€?- 涓嬭浇鍐呭鐗堟潈褰掑師浣滆€咃紝鑷鍒ゆ柇鐢ㄩ€斻€?
