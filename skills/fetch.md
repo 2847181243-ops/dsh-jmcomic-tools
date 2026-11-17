@@ -8,7 +8,7 @@ description: 按编号把整本下到本地漫画库。只执行下载，不读�
 白本人在私聊或群里给一个编号，说「下」「下载」「把这个下了」。
 
 ```
-node runtime/comic/fetch.mjs 268607
+node <本仓库>/fetch.mjs 268607
 ```
 
 回话只有两种：

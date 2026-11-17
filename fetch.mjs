@@ -1,16 +1,21 @@
 #!/usr/bin/env node
 // 下整本 → 压缩 → 确认 → 挪进归档目录；归档里只留最新一本，上一个任务连同临时目录一起清掉。
-// 只给白本人用。用法: node runtime/comic/fetch.mjs 268607 [--verbose]
+// 只给白本人用。用法: node fetch.mjs 268607 [--verbose]
 import { spawnSync } from 'node:child_process'
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 
-const ROOT = 'D:/dsh-private'
-const PY = path.join(ROOT, 'runtime/jmcomic-venv/Scripts/python.exe')
-const BRIDGE = path.join(ROOT, 'agent-home/dsh-home/profiles/desktop/node_modules/dsh-jmcomic/vendor/scripts/bridge.py')
-const LIB = path.join(ROOT, 'data/comic-library')
-const ARCHIVE = path.join(ROOT, 'data/comic-archive')
+const HERE = path.dirname(fileURLToPath(import.meta.url))
+const ROOT = process.env.DSH_JMCOMIC_ROOT || 'D:/dsh-private'
+const PY = process.env.DSH_JMCOMIC_PYTHON || path.join(ROOT, 'runtime/jmcomic-venv/Scripts/python.exe')
+const BRIDGE = process.env.DSH_JMCOMIC_BRIDGE || path.join(ROOT, 'agent-home/dsh-home/profiles/desktop/node_modules/dsh-jmcomic/vendor/scripts/bridge.py')
+const LIB = process.env.DSH_JMCOMIC_LIBRARY || path.join(ROOT, 'data/comic-library')
+const ARCHIVE = process.env.DSH_JMCOMIC_ARCHIVE || path.join(ROOT, 'data/comic-archive')
+const PACKZIP = process.env.DSH_JMCOMIC_PACKZIP || (fs.existsSync(path.join(HERE, 'packzip.py'))
+  ? path.join(HERE, 'packzip.py')
+  : path.join(ROOT, 'runtime/comic/packzip.py'))
 // runtime/ 下对沙箱子进程可能不可写，临时输出固定放系统临时目录
 const TMP = os.tmpdir()
 
@@ -81,9 +86,16 @@ const levelIdx = args.indexOf('--level')
 const level = levelIdx >= 0 ? String(args[levelIdx + 1] || '5') : '5'
 const id = (args.find((a) => /^\d+$/.test(a)) || '').trim()
 if (!id) {
-  console.log('用法: node runtime/comic/fetch.mjs <编号>')
+  console.log('用法: node fetch.mjs <编号>')
   process.exit(2)
 }
+
+if (!fs.existsSync(PY) || !fs.existsSync(BRIDGE) || !fs.existsSync(PACKZIP)) {
+  console.error('缺依赖：检查 DSH_JMCOMIC_PYTHON / DSH_JMCOMIC_BRIDGE / DSH_JMCOMIC_PACKZIP')
+  console.error(`  python=${PY}\n  bridge=${BRIDGE}\n  packzip=${PACKZIP}`)
+  process.exit(3)
+}
+
 
 // 1. 下载
 const before = subDirs()
@@ -123,7 +135,7 @@ if (!albumDir || path.resolve(albumDir) === path.resolve(LIB) || !fs.existsSync(
 // 3. 原图直接打成一个 zip（脚本内部自检：能解、条目数对得上、路径不含 ..，通过才删源目录）
 fs.mkdirSync(ARCHIVE, { recursive: true })
 const out = path.join(ARCHIVE, path.basename(albumDir) + '.zip')
-const pack = runPython([path.join(ROOT, 'runtime/comic/packzip.py'), albumDir, out], 3600000)
+const pack = runPython([PACKZIP, albumDir, out], 3600000)
 const p = pickJson(pack.stdout)
 if (!p || !p.ok) {
   console.log('打包没成功，源目录留着')
